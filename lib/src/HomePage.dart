@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
                     image: DecorationImage(
                         image: contact.img != null
                             ? FileImage(File(contact.img))
-                            : AssetImage('person.png'))),
+                            : AssetImage('lib/assets/person.png'))),
               ),
               Padding(
                 padding: EdgeInsets.only(left: 10.0),
