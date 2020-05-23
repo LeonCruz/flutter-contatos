@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:contatos/src/ContactDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:contatos/helpers/contact_helper.dart';
 
@@ -16,11 +17,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    _helper.getAllContacts().then((value) {
-      setState(() {
-        contacts = value;
-      });
-    });
+    _getAllContacts();
   }
 
   @override
@@ -33,7 +30,9 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
-        onPressed: () {},
+        onPressed: () {
+          _showContactDetail();
+        },
         child: Icon(Icons.add),
       ),
       body: ListView.builder(
@@ -47,6 +46,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget _contactCard(BuildContext context, Contact contact) {
     return GestureDetector(
+      onTap: () {
+        _showContactDetail(contact: contact);
+      },
       child: Card(
         child: Padding(
           padding: EdgeInsets.all(10.0),
@@ -88,5 +90,33 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  void _showContactDetail({Contact contact}) async {
+    final recContact = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ContactDetail(
+                  contact: contact,
+                )));
+
+    if (recContact != null) {
+      if (contact != null) {
+        await _helper.updateContact(recContact);
+        _getAllContacts();
+      } 
+      else {
+        await _helper.saveContact(recContact);
+      }
+      _getAllContacts();
+    }
+  }
+
+  void _getAllContacts() {
+    _helper.getAllContacts().then((value) {
+      setState(() {
+        contacts = value;
+      });
+    });
   }
 }
