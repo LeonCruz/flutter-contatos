@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:contatos/helpers/contact_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ContactDetail extends StatefulWidget {
   @override
@@ -89,6 +90,14 @@ class _ContactDetailState extends State<ContactDetail> {
           child: Column(
             children: <Widget>[
               GestureDetector(
+                onTap: () {
+                  ImagePicker.pickImage(source: ImageSource.camera).then((file) {
+                    if (file == null) return;
+                    setState(() {
+                    _editedContact.img = file.path;
+                    });
+                  });
+                },
                 child: Container(
                   width: 100.0,
                   height: 100.0,
