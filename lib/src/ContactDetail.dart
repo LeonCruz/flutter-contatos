@@ -98,7 +98,7 @@ class _ContactDetailState extends State<ContactDetail> {
                 labelText: 'Telefone',
               ),
               onChanged: (text) {
-                _editedContact.name = text;
+                _editedContact.phone = text;
               },
             ),
           ],
