@@ -13,6 +13,8 @@ class ContactDetail extends StatefulWidget {
 class _ContactDetailState extends State<ContactDetail> {
   Contact _editedContact;
 
+  final _nameFocus = FocusNode();
+
   final _nameController =  TextEditingController();
   final _emailController =  TextEditingController();
   final _phoneController =  TextEditingController();
@@ -42,7 +44,14 @@ class _ContactDetailState extends State<ContactDetail> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
         child: Icon(Icons.save),
-        onPressed: () {},
+        onPressed: () {
+          if (_editedContact.name != null && _editedContact.name.isNotEmpty) {
+            Navigator.pop(context, _editedContact);
+          }
+          else {
+            FocusScope.of(context).requestFocus(_nameFocus);
+          }
+        },
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.0),
@@ -61,9 +70,10 @@ class _ContactDetailState extends State<ContactDetail> {
               ),
             ),
             TextField(
+              focusNode: _nameFocus,
               controller: _nameController,
               decoration: InputDecoration(
-                labelText: _editedContact.name ?? 'Nome',
+                labelText: 'Nome',
               ),
               onChanged: (text) {
                 setState(() {
@@ -75,7 +85,7 @@ class _ContactDetailState extends State<ContactDetail> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: _editedContact.email ?? 'Email', 
+                labelText: 'Email', 
               ),
               onChanged: (text) {
                 _editedContact.email = text;
@@ -85,7 +95,7 @@ class _ContactDetailState extends State<ContactDetail> {
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                labelText: _editedContact.phone ?? 'Telefone',
+                labelText: 'Telefone',
               ),
               onChanged: (text) {
                 _editedContact.name = text;
