@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:contatos/src/ContactDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:contatos/helpers/contact_helper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -44,10 +45,69 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _showOptions(BuildContext context, Contact contact) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return BottomSheet(
+            onClosing: () {},
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text('Ligar',
+                            style:
+                                TextStyle(color: Colors.green, fontSize: 20.0)),
+                        onPressed: () {
+                          launch('tel:${contact.phone}');
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text('Editar',
+                            style:
+                                TextStyle(color: Colors.amber, fontSize: 20.0)),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _showContactDetail(contact: contact);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text('Apagar',
+                            style:
+                                TextStyle(color: Colors.red, fontSize: 20.0)),
+                        onPressed: () {
+                          _helper.deleteContact(contact.id);
+                         setState(() {
+                            contacts.remove(contact);
+                         });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        });
+  }
+
   Widget _contactCard(BuildContext context, Contact contact) {
     return GestureDetector(
       onTap: () {
-        _showContactDetail(contact: contact);
+        _showOptions(context, contact);
       },
       child: Card(
         child: Padding(
@@ -104,8 +164,7 @@ class _HomePageState extends State<HomePage> {
       if (contact != null) {
         await _helper.updateContact(recContact);
         _getAllContacts();
-      } 
-      else {
+      } else {
         await _helper.saveContact(recContact);
       }
       _getAllContacts();
